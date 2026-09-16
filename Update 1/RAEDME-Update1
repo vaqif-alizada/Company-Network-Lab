@@ -1,0 +1,50 @@
+WHAT I HAVE DONE:
+
+1. Basic Security, VLANs, Trunks & Blackhole Ports
+
+Late-night lab session — first pass at securing and segmenting the network.
+
+    Basic Security: Configured hostnames, passwords, and password encryption on all devices.
+    VLANs: Separated traffic for each department into its own VLAN.
+    Trunks & Blackhole Ports: Fixed trunk link configurations, changed the native VLAN to VLAN 999, and moved all unused switch ports into a dedicated "Blackhole" VLAN to prevent unauthorized access on unassigned ports.
+
+2. EtherChannel & STP Path Optimization
+
+Added link redundancy and bandwidth aggregation across the core and distribution layers, then tuned STP to control path preference.
+🔹 EtherChannel
+
+Bundled multiple physical links into single logical links (Port-Channel interfaces) to provide redundancy and increase available bandwidth between switches.
+🔹 STP Path Optimization
+
+    Po1 — the EtherChannel between the two distribution switches — was given a lower STP cost, since the distribution layer handles inter-VLAN routing. This keeps Po1 the preferred path whenever possible.
+    Po2 — the EtherChannel between the core switches — was left at its default STP cost, serving as a redundant path without a manually forced preference.
+
+🔹 Open Question / Observation
+
+Manually configured spanning-tree cost 1 on the Po1 interface:
+
+    show running-config correctly reflects the configured cost of 1.
+    show spanning-tree reports an operational cost of 3.
+
+This discrepancy between configured and operational STP cost on the port-channel is still unresolved — noted here for future investigation.
+3. Core Layer Redesign, IP Addressing & Inter-VLAN Routing
+
+Expanded the lab into a full multi-site topology and reworked the core layer.
+🔹 Core Layer Redesign
+
+Replaced the HQ core switches with Layer 3 devices (3560), moving away from a pure Layer 2 core to add routing capability above the distribution layer. A practical example of how the "textbook" 3-tier model can be adapted to fit specific design goals.
+🔹 IP Addressing
+
+Completed the full IP addressing plan for the network (ISP-side addressing still pending). Extra address space was intentionally reserved at the distribution and core layers to allow for future growth. Note: the subnetting scheme prioritizes clarity and ease of lab work over strict real-world best practices.
+🔹 Inter-VLAN Routing
+
+    HQ & Branch 2: Inter-VLAN routing handled via SVIs on the Layer 3 switches.
+    Branch 1: Inter-VLAN routing handled via Router-on-a-Stick.
+
+For frequent updates visit my linkedin: https://www.linkedin.com/in/vaqif-alizada/
+
+Still actively building (and occasionally breaking things) — more updates to follow as new topics are added.
+
+    Note: I'm constantly tweaking and re-optimizing this topology, so there are likely smaller changes along the way that didn't make it into a dedicated post/update. This lab is also just a starting point — I plan to keep expanding it with IP phones, servers, wireless, and more.
+
+    Longer term, I want to rebuild an improved version of this lab in EVE-NG, since Packet Tracer has some bugs/limitations I'd like to get away from.
